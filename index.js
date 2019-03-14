@@ -1,19 +1,30 @@
-const express = require('express');
-const path = require('path');
-const PORT = process.env.PORT || 3000;
-
+var express = require('express');
 var app = express();
-var io = require('socket.io')(app);
+const path = require('path');
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-app.use(express.static(path.join(__dirname, 'public')))
-    .set('view engine', 'ejs')
-    .get('/', (req, res) => res.render('index.ejs'))
-    .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', "ejs");
+app.get('/', function(req, res){
+    res.render(__dirname + '/views/index.ejs');
+});
 
+io.on('connection', function(socket){
+    console.log('a user connected');
 
-io.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        console.log(data);
+    socket.on('playEvent', function(msg){
+        io.emit('playEvent');
     });
+    socket.on('pauseEvent', function(msg){
+       io.emit('pauseEvent');
+    });
+    socket.on('skipAround', function(data){
+       io.emit('skipAround', data);
+    });
+
+});
+
+http.listen(3000, function(){
+    console.log('listening on *:3000');
 });

@@ -25,7 +25,7 @@
     }
     #line{
         width: 550px;
-        height: 2px;
+        height: 4px;
         background-color: black;
         margin-top: 15px;
         position: absolute;
@@ -35,7 +35,7 @@
         width: 12px;
         height: 12px;
         position: relative;
-        bottom: 5px;
+        bottom: 4px;
     }
 </style>
 
@@ -77,18 +77,19 @@
 
         </section>
 
+
         <section class = "container" id = "content">
             <h1> Brandon Chen </h1>
             <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
             <div id="player"></div>
             <div id ="controls">
                 <div class = "btn-group" style = "float:left;">
-                    <button type="button" class="btn btn-default">
+                    <button id = "play" type="button" class="btn btn-default play">
                         <span class="glyphicon glyphicon-play"></span>
                     </button>
                 </div>
-                <div class = "btn-group" style = "float:left;">
-                    <button type="button" class="btn btn-default">
+                <div id = "pause" class = "btn-group" style = "float:left;">
+                    <button type="button" class="btn btn-default pause">
                     <span class="glyphicon glyphicon-pause"></span>
                     </button>
                 </div>
@@ -100,12 +101,44 @@
             </div>
 
 
+            <section id = "sockets">
+                <script src="/socket.io/socket.io.js"></script>
+                <script>
+                    var socket = io();
+                    var playButton = $('#play');
+                    var pauseButton = $('#pause');
+                    var progressSquare = $('#square');
+                    playButton.click(function(){
+                       socket.emit('playEvent', 'play');
+                    });
+                    pauseButton.click(function(){
+                        socket.emit('pauseEvent', 'pause');
+                    });
+                    socket.on('playEvent', function(){
+                       player.playVideo();
+                    });
+                    socket.on('pauseEvent', function(){
+                        player.pauseVideo();
+                    });
+                    socket.on('skipAround', function(data){
+                        var bar = data / player.getDuration() * 100;
+                        progressSquare.css("left",  bar.toString() + "%");
+                        player.seekTo(data, true);
+                    });
+                </script>
+            </section>
 
             <!-- Javascript -->
             <script>
                 function progressLoop(){
-                    var progressBar = $('#progessbar');
+                    var progressBar = $('#progressbar');
+                    var line = $('#line');
                     var progressSquare = $('#square');
+                    line.click(function(event){
+                        console.log($(this).offset().left);
+                        var seconds = (event.clientX - $(this).offset().left)/550 * player.getDuration();
+                        socket.emit('skipAround', seconds);
+                    });
                     setInterval(function(){
                         if (player == null || progressBar == null){
                             return;
@@ -161,7 +194,8 @@
             </script>
         </section>
 
-
+    </div>
+</body>
 
 
 </html>
