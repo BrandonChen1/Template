@@ -1,0 +1,27 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "template for node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrandonChen1/Template.git"
+  },
+  "author": "Brandon Chen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BrandonChen1/Template/issues"
+  },
+  "homepage": "https://github.com/BrandonChen1/Template#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "node": "^11.11.0",
+    "path": "^0.12.7",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
+  }
+}
