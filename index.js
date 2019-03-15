@@ -22,6 +22,9 @@ io.on('connection', function(socket){
     socket.on('skipAround', function(data){
        io.emit('skipAround', data);
     });
+    socket.on('chooseVideo', function(data){
+        io.emit('chooseVideo', data);
+    });
 
 });
 
